@@ -1,0 +1,73 @@
+// buildscript {
+//     ext {
+//         kotlinVersion = '1.5.31' // Unified to avoid conflicts
+//         buildToolsVersion = findProperty('android.buildToolsVersion') ?: '33.0.2' // Adjusted to a valid version
+//         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
+//         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '33') // Adjusted to a valid version
+//         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '33') // Adjusted for alignment
+//         ndkVersion = "26.1.10909125"
+//     }
+//     repositories {
+//         google()
+//         mavenCentral()
+//     }
+//     dependencies {
+//         classpath 'com.android.tools.build:gradle:7.0.2' // Make sure this matches your Gradle wrapper version
+//         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+//         classpath 'com.facebook.react:react-native-gradle-plugin' // Keep this as needed for React Native
+//     }
+// }
+
+// apply plugin: "com.facebook.react.rootproject"
+
+// // Apply Java toolchain configuration
+// // java {
+//     // toolchain {
+//         // languageVersion = JavaLanguageVersion.of(17) // Use Java 11 or another supported version
+//     // }
+// // 
+// allprojects {
+//     repositories {
+//         maven {
+//             url(new File(['node', '--print', "require.resolve('react-native/package.json')"]
+//                 .execute(null, rootDir).text.trim(), '../android'))
+//         }
+//         maven {
+//             url(new File(['node', '--print', "require.resolve('jsc-android/package.json', { paths: [require.resolve('react-native/package.json')] })"]
+//                 .execute(null, rootDir).text.trim(), '../dist'))
+//         }
+
+//         google()
+//         mavenCentral()
+//         maven { url 'https://www.jitpack.io' }
+//     }
+// }
+buildscript {
+    ext {
+        kotlinVersion = '1.5.31' // Unified to avoid conflicts
+        buildToolsVersion = findProperty('android.buildToolsVersion') ?: '33.0.2'
+        minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
+        compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '33')
+        targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '33')
+        ndkVersion = "26.1.10909125"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.0.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath 'com.facebook.react:react-native-gradle-plugin'
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
+    }
+}
