@@ -1,14 +1,24 @@
-import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { useRef, useState } from "react";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 
 export default function App() {
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef(null);
+  const [photo, setPhoto] = useState(null);
+  const navigation = useNavigation();
 
-  if (!permission) {
-    return <View />;
-  }
+  if (!permission) return <View />;
 
   if (!permission.granted) {
     return (
@@ -16,24 +26,49 @@ export default function App() {
         <Text style={styles.message}>
           We need your permission to show the camera
         </Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Button onPress={requestPermission} title="Grant Permission" />
       </View>
     );
   }
 
-  function toggleCameraFacing() {
+  const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
-  }
+  };
+
+  const takePhoto = async () => {
+    if (cameraRef.current) {
+      const photoData = await cameraRef.current.takePictureAsync();
+      setPhoto(photoData.uri);
+    }
+  };
+
+  const proceed = () => {
+    if (photo) {
+      navigation.navigate("UploadedImgs", { imageUri: photo }); // pass the image
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
+      {!photo ? (
+        <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+              <Text style={styles.text}>Flip Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={takePhoto}>
+              <Text style={styles.text}>Capture</Text>
+            </TouchableOpacity>
+          </View>
+        </CameraView>
+      ) : (
+        <View style={styles.previewContainer}>
+          <Image source={{ uri: photo }} style={styles.previewImage} />
+          <TouchableOpacity style={styles.button} onPress={proceed}>
+            <Text style={styles.text}>Proceed</Text>
           </TouchableOpacity>
         </View>
-      </CameraView>
+      )}
     </View>
   );
 }
@@ -41,7 +76,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
   },
   message: {
     textAlign: "center",
@@ -53,17 +87,28 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-end",
     backgroundColor: "transparent",
-    margin: 64,
+    marginBottom: 50,
   },
   button: {
-    flex: 1,
-    alignSelf: "flex-end",
-    alignItems: "center",
+    backgroundColor: "#00000080",
+    padding: 10,
+    borderRadius: 8,
   },
   text: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 16,
     color: "white",
+  },
+  previewContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  previewImage: {
+    width: "100%",
+    height: "80%",
+    resizeMode: "cover",
   },
 });

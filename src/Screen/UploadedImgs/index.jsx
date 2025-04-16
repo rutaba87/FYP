@@ -1,4 +1,4 @@
-import { React } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -7,21 +7,35 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
-const UploadedImgs = ({ navigation }) => {
+const UploadedImgs = ({ route, navigation }) => {
+  const { imageUri } = route.params || {};
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.containerHeader}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Uploaded Image</Text>
         </View>
-        <View style={styles.containerContent}></View>
+
+        {/* Display the uploaded image */}
+        <View style={styles.containerContent}>
+          {imageUri ? (
+            <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+          ) : (
+            <Text style={{ color: "white", textAlign: "center", marginTop: 80 }}>
+              No image found
+            </Text>
+          )}
+        </View>
+
         <View>
           <Text style={styles.successText}>Processed Successfully..</Text>
         </View>
       </View>
 
+      {/* Feature Section */}
       <View style={styles.feature}>
         <Text style={styles.title}>Extracted Features</Text>
 
@@ -46,6 +60,7 @@ const UploadedImgs = ({ navigation }) => {
         </View>
       </View>
 
+      {/* Bottom Navigation */}
       <View style={styles.bottom}>
         <View style={styles.backArrow}>
           <Ionicons name="arrow-back" size={24} color="black" />

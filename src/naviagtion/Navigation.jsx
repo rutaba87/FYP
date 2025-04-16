@@ -13,8 +13,8 @@ function Navigation() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="Dashboard" component={Dashboard} />
-      <Stack.Screen name="UploadedImgs" component={UploadedImgs} />
       <Stack.Screen name="CameraScreen" component={CameraScreen} />
+      <Stack.Screen name="UploadedImgs" component={UploadedImgs} />
       <Stack.Screen name="ProfileManager" component={ProfileManager} />
     </Stack.Navigator>
   );
